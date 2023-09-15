@@ -2,7 +2,6 @@
 
 import { useBoardStore } from "@/store/BoardStore"
 import { useEditModalStore } from "@/store/EditModalStore"
-import getUrl from "@/utils/getUrl"
 import { PencilSquareIcon, XCircleIcon } from "@heroicons/react/24/solid"
 import Image from "next/image"
 
@@ -15,7 +14,10 @@ export default function TodoCard({
   dragHandleProps,
   isDraggingOver
 }) {
-  const [deleteTodoInBoardAndDB] = useBoardStore(state => [state.deleteTodoInBoardAndDB])
+  const [deleteTodoInBoardAndDB, setColumnIdSelected] = useBoardStore(state => [
+    state.deleteTodoInBoardAndDB,
+    state.setColumnIdSelected
+  ])
   const [openModal, setTitleTodo, setIdTodo, setStatusTodo] = useEditModalStore(state => [
     state.openModal,
     state.setTitleTodo,
@@ -26,7 +28,8 @@ export default function TodoCard({
   const handleEdit = (todo) => {
     setTitleTodo(todo.title)
     setIdTodo(todo.$id)
-    setStatusTodo(todo.status)
+    setColumnIdSelected(todo.id)
+    setStatusTodo(id)
     openModal()
   }
 

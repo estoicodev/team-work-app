@@ -13,10 +13,9 @@ const idToColumnText = {
 
 export default function Column({ id, todos, index }) {
   const [filteredTodos, setFilteredTodos] = useState(todos)
-  const [searchString, setColumnIdSelected, columnIdSelected] = useBoardStore((state) => [
+  const [searchString, setColumnIdSelected] = useBoardStore((state) => [
     state.searchString,
-    state.setColumnIdSelected,
-    state.columnIdSelected
+    state.setColumnIdSelected
   ])
   const openModal = useAddModalStore((state) => state.openModal)
 

@@ -5,6 +5,7 @@ export const useEditModalStore = create((set) => ({
   titleTodo: "",
   $idTodo: "",
   columnIdSrc: "",
+  statusTodo: "",
   openModal: () => set({ isOpen: true }),
   closeModal: () => {
     set({ isOpen: false })

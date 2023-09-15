@@ -8,32 +8,49 @@ import { useEditModalStore } from '@/store/EditModalStore'
 import RadioGroupByColumnId from './RadioGroupByColumnId'
 
 export default function EditTodoModal() {
-  const [updateTodoToBoardAndDB] = useBoardStore((state) => [
-    state.updateTodoToBoardAndDB
+  const [updateTodoToBoardAndDB, image, setImage] = useBoardStore((state) => [
+    state.updateTodoToBoardAndDB,
+    state.image,
+    state.setImage
   ])
-  const [isOpen, closeModal, titleTodo, setTitleTodo, $idTodo, setIdTodo, statusTodo] = useEditModalStore((state) => [
+  const [
+    isOpen, closeModal, titleTodo, setTitleTodo, $idTodo, setIdTodo, statusTodo, setStatusTodo
+  ] = useEditModalStore((state) => [
     state.isOpen,
     state.closeModal,
     state.titleTodo,
     state.setTitleTodo,
     state.$idTodo,
     state.setIdTodo,
-    state.statusTodo
+    state.statusTodo,
+    state.setStatusTodo
   ])
 
-  const handleKeyboardUpdateTodo = (e) => {
-    if (e.key === "Enter") {
+  const resetModal = () => {
+    setTitleTodo("")
+    setIdTodo("")
+    setImage(null)
+    setStatusTodo("")
+  }
+
+  const handleSubmit = (e) => {
       e.preventDefault()
+      if (!titleTodo) return
+
       updateTodoToBoardAndDB({
         $id: $idTodo,
         title: titleTodo,
         status: statusTodo,
-        image: null
+        image: image
       })
+
       closeModal()
-      setTitleTodo("")
-      setIdTodo("")
+      resetModal()
     }
+
+  const handleClose = () => {
+    closeModal()
+    resetModal()
   }
 
   return (
@@ -41,8 +58,11 @@ export default function EditTodoModal() {
       <Dialog
         as="form"
         className="relative z-10"
-        onClose={closeModal}
-        onKeyDown={(e) => handleKeyboardUpdateTodo(e)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSubmit(e)
+        }}
+        onClose={handleClose}
+        onSubmit={(e) => handleSubmit(e)}
       >
         <Transition.Child
           as={Fragment}
@@ -93,13 +113,22 @@ export default function EditTodoModal() {
                   type="file"
                   accept="image/*"
                   className="w-1 h-1 absolute -z-10 opacity-0 overflow-hidden"
+                  onChange={(e) => {
+                    if (!e.target.files[0].type.startsWith("image/")) return
+
+                    const file = e.target.files[0]
+                    if (file) setImage(file)
+                  }}
                 />
                 <label
                   htmlFor="file-image"
-                  className="flex items-center justify-center w-full h-full text-sm font-medium text-gray-800 bg-blue border border-gray-300 rounded-md px-5 py-7 shadow-sm cursor-pointer hover:bg-white/50"
+                  className="flex items-center justify-center w-full h-full text-sm font-medium text-gray-800 bg-transparent hover:bg-gray-200 border border-gray-300 rounded-md px-5 py-7 shadow-sm cursor-pointer"
                 >
                   <PhotoIcon className="w-6 h-6 text-gray-800 mr-2" />
-                  Sube una imagen
+                  {image ?
+                    <span>{image.name}</span>
+                    : "Sube una imagen"
+                  }
                 </label>
               </div>
 
@@ -108,28 +137,19 @@ export default function EditTodoModal() {
                   className="order-2 xs:order-1 flex-1 xs:flex-none bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg inline-flex justify-center items-center"
                   onClick={(e) => {
                     e.preventDefault()
-                    closeModal()
-                    setTitleTodo("")
-                    setIdTodo("")
+                    handleClose()
                   }}
                 >
                   <XMarkIcon className="relative -left-2 w-5 h-5 mr-2" />
                   <span>Cancelar</span>
                 </button>
                 <button
-                  className="order-1 xs:order-2 flex-1 xs:flex-none bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg inline-flex justify-center items-center"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    updateTodoToBoardAndDB({
-                      $id: $idTodo,
-                      title: titleTodo,
-                      status: statusTodo,
-                      image: null
-                    })
-                    closeModal()
-                    setTitleTodo("")
-                    setIdTodo("")
-                  }}
+                  type="submit"
+                  disabled={!titleTodo}
+                  className="order-1 xs:order-2 flex-1 xs:flex-none bg-blue-500 hover:bg-blue-600
+                    text-white font-bold py-3 px-6 rounded-lg inline-flex
+                    disabled:bg-blue-300 disabled:text-white/80 disabled:cursor-not-allowed
+                  "
                 >
                   <PlusIcon className="relative -left-2 w-5 h-5 mr-1" />
                   <span>Actualizar</span>

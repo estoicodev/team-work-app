@@ -9,11 +9,12 @@ import RadioGroupByColumnId from './RadioGroupByColumnId'
 
 export default function AddTodoModal() {
   const [
-    newTaskInput, setNewTaskInput, columnIdSelected, image, setImage, addTodoToBoardAndDB
+    newTaskInput, setNewTaskInput, columnIdSelected, setColumnIdSelected, image, setImage, addTodoToBoardAndDB
   ] = useBoardStore((state) => [
     state.newTaskInput,
     state.setNewTaskInput,
     state.columnIdSelected,
+    state.setColumnIdSelected,
     state.image,
     state.setImage,
     state.addTodoToBoardAndDB
@@ -22,6 +23,11 @@ export default function AddTodoModal() {
     state.isOpen,
     state.closeModal
   ])
+
+  const resetModal = () => {
+    setImage(null)
+    setColumnIdSelected("")
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -34,8 +40,13 @@ export default function AddTodoModal() {
     })
 
     closeModal()
-    setImage(null)
+    resetModal()
     setNewTaskInput("")
+  }
+
+  const handleClose = (e) => {
+    closeModal()
+    resetModal()
   }
 
   return (
@@ -43,7 +54,10 @@ export default function AddTodoModal() {
       <Dialog
         as="form"
         className="relative z-10"
-        onClose={closeModal}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSubmit(e)
+        }}
+        onClose={handleClose}
         onSubmit={(e) => handleSubmit(e)}
       >
         <Transition.Child
@@ -119,9 +133,7 @@ export default function AddTodoModal() {
                   className="order-2 xs:order-1 flex-1 xs:flex-none bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg inline-flex justify-center items-center"
                   onClick={(e) => {
                     e.preventDefault()
-                    closeModal()
-                    setNewTaskInput("")
-                    setImage(null)
+                    handleClose()
                   }}
                 >
                   <XMarkIcon className="relative -left-2 w-5 h-5 mr-2" />

@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 const uploadImage = async (file) => {
   const fileResponse = await storage.createFile(
-    process.env.NEXT_PUBLIC_TODOs_BUCKET_ID,
+    process.env.NEXT_PUBLIC_TODOS_BUCKET_ID,
     uuidv4(),
     file
   )

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { useBoardStore } from '@/store/BoardStore'
 import { useEditModalStore } from '@/store/EditModalStore'
@@ -38,16 +38,17 @@ export default function RadioGroupByColumnId({ type = "add"}) {
     state.setStatusTodo,
     state.setColumnIdSrc
   ])
-  const columnId = statusTodo || columnIdSelected
+  const columnId = type === "edit" ? statusTodo : columnIdSelected
   const selectedType = types.find(type => type.id === columnId)
   const [selected, setSelected] = useState(selectedType)
 
   const handleSelectRadio = (t) => {
     setSelected(t)
     setColumnIdSrc(columnId)
-    setColumnIdSelected(t.id)
     if (type === "edit") {
       setStatusTodo(t.id)
+    } else {
+      setColumnIdSelected(t.id)
     }
   }
 

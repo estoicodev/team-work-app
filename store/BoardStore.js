@@ -88,8 +88,8 @@ export const useBoardStore = create((set) => ({
       }
     )
 
-    addedTodo.bucketId = file.bucketId || null
-    addedTodo.fileId = file.fileId || null
+    addedTodo.bucketId = file?.bucketId || null
+    addedTodo.fileId = file?.fileId || null
 
     column.todos.push(addedTodo)
     board.columns.set(addedTodo.status, column)
@@ -99,14 +99,38 @@ export const useBoardStore = create((set) => ({
   },
   updateTodoToBoardAndDB: async (todo) => {
     const board = useBoardStore.getState().board
-    const columnSrc = board.columns.get(useEditModalStore.getState().columnIdSrc)
+    const statusSrc = useEditModalStore.getState().columnIdSrc || todo.status
+    const columnSrc = board.columns.get(statusSrc)
     const columnDest = board.columns.get(todo.status)
+
+    let file
+    // Add image in storage if exists
+    if (todo.image) {
+      const fileUploaded = await uploadImage(todo.image)
+
+      if (fileUploaded) {
+        file = {
+          bucketId: fileUploaded.bucketId,
+          fileId: fileUploaded.$id
+        }
+      }
+    }
+
+    // Handle ui update
     const indexSrc = columnSrc.todos.findIndex((t) => t.$id === todo.$id)
-    columnSrc.todos.splice(indexSrc, 1)
-    columnDest.todos.push(todo)
-    board.columns.set(useEditModalStore.getState().columnIdSrc, columnSrc)
-    board.columns.set(todo.status, columnDest)
-    set({ board })
+    if (columnSrc && columnSrc === columnDest) {
+      columnSrc.todos[indexSrc].title = todo.title
+      columnSrc.todos[indexSrc].image = file ? getUrl(file.bucketId, file.fileId) : null
+      board.columns.get(todo.status).todos = columnSrc.todos
+    } else {
+      columnSrc.todos.splice(indexSrc, 1)
+      columnDest.todos.push({
+        ...todo,
+        ...(file && { image: getUrl(file.bucketId, file.fileId) }),
+      })
+      board.columns.get(statusSrc).todos = columnSrc.todos
+      board.columns.get(todo.status).todos = columnDest.todos
+    }
 
     // Update todo in DB
     await databases.updateDocument(
@@ -115,8 +139,12 @@ export const useBoardStore = create((set) => ({
       todo.$id,
       {
         title: todo.title,
-        status: todo.status
+        status: todo.status,
+        ...(file && { image: getUrl(file.bucketId, file.fileId) }),
       }
     )
+
+    set({ board })
+    return { board }
   },
 }))
