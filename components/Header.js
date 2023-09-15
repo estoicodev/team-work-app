@@ -37,7 +37,7 @@ export default function Header() {
 
   return (
     <header>
-      <div className="flex flex-col md:flex-row items-center p-5 bg-gray-500/10 rounded-b-2xl">
+      <div className="flex flex-col md:flex-row items-center px-5 bg-gray-500/10 rounded-b-2xl">
         <div
           className="
             absolute
@@ -55,16 +55,20 @@ export default function Header() {
           "
         ></div>
 
-        <Image
-          src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/Trello_logo.svg/1280px-Trello_logo.svg.png"
-          alt="Team work logo"
-          width={300}
-          height={100}
-          className="w-44 md:w-56 pb-10 md:pb-0 object-contain"
-          priority
-        />
+        <div className="relative -left-4 md:-left-0 flex items-center justify-center pb-6 md:pb-0">
+          <Image
+            src="https://i.imgur.com/rd0pRME.png"
+            alt="Team work logo"
+            width={200}
+            height={100}
+            className="w-24 md:32 object-contain"
+            priority
+          />
+          <span className="relative top-1 md:top-0 text-3xl sm:text-4xl md:text-5xl font-bold text-blue-900 italic select-none">Team Work</span>
+        </div>
 
-        <div className="w-full flex items-center space-x-4 flex-1 md:justify-end">
+
+        <div className="w-full flex items-center space-x-4 flex-1 md:justify-end pb-8 md:pb-0">
           {/* Searchbox */}
           <form className="flex space-x-4 items-center bg-white rounded-md shadow-md p-2 flex-1 md:flex-initial">
             <MagnifyingGlassIcon className="w-6 h-6 text-gray-400"/>
@@ -82,7 +86,7 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center justify-center px-5 py-3 md:py-5">
+      <div className="flex items-center justify-center p-5 pt-">
         <p className={`flex items-center text-sm font-light italic shadow-xl rounded-xl px-5 py-3 w-fit md:min-w-[360px] ${
           aiIsEnabled ? "bg-white" : "bg-white/50 text-black/80"}`}>
           {

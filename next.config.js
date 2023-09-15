@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['upload.wikimedia.org', 'cloud.appwrite.io']
+    domains: ['cloud.appwrite.io', 'i.imgur.com']
   }
 }
 
