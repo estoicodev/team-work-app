@@ -1,15 +1,39 @@
 "use client"
 
-import { useBoardStore } from '@/store/BoardStore'
+import { useBoardStore } from '@/store/BoardStore.js'
 import Image from 'next/image'
-import { MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/solid'
+import { FaceFrownIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import Avatar from 'react-avatar'
+import { useEffect, useState } from 'react'
+import fetchSuggestion from '@/utils/fetchSuggestion'
 
 export default function Header() {
-  const [searchString, setSearchString] = useBoardStore((state) => [
+  const [board, searchString, setSearchString] = useBoardStore((state) => [
+    state.board,
     state.searchString,
     state.setSearchString
   ])
+  const [aiIsEnabled, setAiIsEnabled] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [suggestion, setSuggestion] = useState("Asistente de tareas ChatGPT")
+
+  useEffect(() => {
+    if (board.columns.size === 0) return
+    setLoading(true)
+
+    const fetchSuggestionFunc = async () => {
+      const suggestion = await fetchSuggestion(board)
+
+      if (suggestion === null) {
+        setAiIsEnabled(false)
+        setLoading(false)
+      } else if (suggestion && suggestion.length) {
+        setSuggestion(suggestion)
+        setLoading(false)
+      }
+    }
+    fetchSuggestionFunc()
+  }, [board])
 
   return (
     <header>
@@ -59,9 +83,21 @@ export default function Header() {
       </div>
 
       <div className="flex items-center justify-center px-5 py-3 md:py-5">
-        <p className="flex items-center text-sm font-light italic shadow-xl rounded-xl px-5 py-3 bg-white w-fit w-">
-          <UserCircleIcon className="inline-block w-9 h-9 text-blue-500 mr-1.5"/>
-          ChatGPT is summarizing your daily tasks...
+        <p className={`flex items-center text-sm font-light italic shadow-xl rounded-xl px-5 py-3 w-fit md:min-w-[360px] ${
+          aiIsEnabled ? "bg-white" : "bg-white/50 text-black/80"}`}>
+          {
+            aiIsEnabled ?
+            <UserCircleIcon className={`inline-block w-9 h-9 text-blue-500 mr-1.5 ${
+              loading ? "animate-spin" : ""
+            }`}/> :
+            <FaceFrownIcon className={`inline-block w-9 h-9 text-blue-500 mr-1.5`}/>
+          }
+          {(aiIsEnabled && loading) ?
+          "ChatGPT está procesando tus tareas del día..." :
+          (aiIsEnabled && !loading) ?
+          suggestion :
+          "ChatGPT no está disponible en este momento..."
+          }
         </p>
       </div>
     </header>

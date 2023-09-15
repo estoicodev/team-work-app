@@ -3,6 +3,7 @@ import TodoCard from "./TodoCard"
 import { PlusCircleIcon } from "@heroicons/react/24/solid"
 import { useEffect, useState } from "react"
 import { useBoardStore } from "@/store/BoardStore"
+import { useAddModalStore } from "@/store/AddModalStore"
 
 const idToColumnText = {
   'todo': 'To Do',
@@ -12,7 +13,12 @@ const idToColumnText = {
 
 export default function Column({ id, todos, index }) {
   const [filteredTodos, setFilteredTodos] = useState(todos)
-  const [searchString] = useBoardStore((state) => [state.searchString])
+  const [searchString, setColumnIdSelected, columnIdSelected] = useBoardStore((state) => [
+    state.searchString,
+    state.setColumnIdSelected,
+    state.columnIdSelected
+  ])
+  const openModal = useAddModalStore((state) => state.openModal)
 
   useEffect(() => {
     if (searchString.length > 0) {
@@ -58,12 +64,13 @@ export default function Column({ id, todos, index }) {
                     >
                       {(provided) => (
                         <TodoCard
-                          todo={todo}
-                          index={index}
                           id={id}
+                          index={index}
+                          todo={todo}
                           innerRef={provided.innerRef}
                           draggableProps={provided.draggableProps}
                           dragHandleProps={provided.dragHandleProps}
+                          isDraggingOver={snapshot.isDraggingOver}
                         />
                       )}
                     </Draggable>
@@ -72,8 +79,13 @@ export default function Column({ id, todos, index }) {
                   {provided.placeholder}
 
                   <div className="flex justify-end items-end p-2">
-                    <button 
-                      className="text-green-500/80 hover:text-green-600/80" 
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setColumnIdSelected(id)
+                        openModal()
+                      }}
+                      className="text-green-500/80 hover:text-green-600/80"
                     >
                       <PlusCircleIcon className="w-10 h-10" />
                     </button>

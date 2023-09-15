@@ -1,35 +1,66 @@
 "use client"
 
-import { XCircleIcon } from "@heroicons/react/24/solid"
+import { useBoardStore } from "@/store/BoardStore"
+import { useEditModalStore } from "@/store/EditModalStore"
+import getUrl from "@/utils/getUrl"
+import { PencilSquareIcon, XCircleIcon } from "@heroicons/react/24/solid"
 import Image from "next/image"
 
 export default function TodoCard({
-  todo,
-  index,
   id,
+  index,
+  todo,
   innerRef,
   draggableProps,
-  dragHandleProps
+  dragHandleProps,
+  isDraggingOver
 }) {
+  const [deleteTodoInBoardAndDB] = useBoardStore(state => [state.deleteTodoInBoardAndDB])
+  const [openModal, setTitleTodo, setIdTodo, setStatusTodo] = useEditModalStore(state => [
+    state.openModal,
+    state.setTitleTodo,
+    state.setIdTodo,
+    state.setStatusTodo
+  ])
+
+  const handleEdit = (todo) => {
+    setTitleTodo(todo.title)
+    setIdTodo(todo.$id)
+    setStatusTodo(todo.status)
+    openModal()
+  }
+
   return (
     <div
       {...draggableProps}
       {...dragHandleProps}
       ref={innerRef}
-      className="rounded-md drop-shadow-md space-y-3 bg-white"
+      className={`rounded-md drop-shadow-md space-y-3 bg-white hover:bg-white/80 ${
+        isDraggingOver ? 'bg-white/80' : 'bg-white'}`}
     >
-      <div className="flex justify-between items-center px-5 py-4">
+      <div className="flex justify-between items-center pl-5 pr-4 py-4">
         <p className="text-base">{todo.title}</p>
-        <button>
-          <XCircleIcon className="w-8 h-8 inline-block text-red-500 hover:text-red-600" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <button onClick={() => handleEdit(todo)} className="p-1 group">
+            <PencilSquareIcon
+              className="w-[22px] h-[22px] inline-block relative -top-0.5 text-gray-500 group-hover:text-gray-600"
+            />
+          </button>
+          <button onClick={() => deleteTodoInBoardAndDB(id, index)}>
+            <XCircleIcon
+              className="w-[30px] h-[30px] inline-block text-red-500 hover:text-red-600"
+            />
+          </button>
+        </div>
       </div>
-      {todo.image !== undefined &&
-        <Image
-          width={250} height={200}
-          alt={todo.title} src={todo.image}
-          className="w-full h-48 object-cover rounded-b-md "
-        />
+      {
+        todo.image && (
+          <Image
+            width={250} height={200}
+            alt={todo.title} src={todo.image}
+            className="w-full h-48 md:h-52 object-cover object-center rounded-b-md"
+          />
+        )
       }
     </div>
   )

@@ -1,3 +1,5 @@
+import AddTodoModal from '@/components/AddTodoModal'
+import EditTodoModal from '@/components/EditTodoModal'
 import './globals.css'
 
 export const metadata = {
@@ -8,7 +10,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-gray-300/10">{children}</body>
+      <body className="bg-gray-300/10">
+        {children}
+        <AddTodoModal />
+        <EditTodoModal />
+      </body>
     </html>
   )
 }
