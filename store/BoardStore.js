@@ -14,7 +14,15 @@ export const useBoardStore = create((set) => ({
   columnIdSelected: "",
   image: null,
   searchString: "",
+  inputSearchFocused: false,
+  modalIsOpen: false,
   setSearchString: (searchString) => set({ searchString }),
+  setInputSearchFocused: (inputSearchFocused) => {
+    set({ inputSearchFocused })
+  },
+  setModalIsOpen: (modalIsOpen) => {
+    set({ modalIsOpen })
+  },
   setNewTaskInput: (newTaskInput) => set({ newTaskInput }),
   setColumnIdSelected: (columnIdSelected) => set({ columnIdSelected }),
   getBoard: async () => {
@@ -39,25 +47,6 @@ export const useBoardStore = create((set) => ({
       }
     )
     return data
-  },
-  deleteTodoInBoardAndDB: async (id, index) => {
-    const board = useBoardStore.getState().board
-    const column = board.columns.get(id)
-    const [deleted] = column.todos.splice(index, 1)
-    board.columns.set(id, column)
-    set({ board })
-    
-    // Delete in DB
-    await databases.deleteDocument(
-      process.env.NEXT_PUBLIC_DATABASE_ID,
-      process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID,
-      deleted.$id
-    )
-
-    // Delete image from storage if exists
-    if (deleted.image) {
-      await storage.deleteFile(deleted.bucketId, deleted.fileId)
-    }
   },
   addTodoToBoardAndDB: async (todo) => {
     const board = useBoardStore.getState().board
@@ -96,6 +85,25 @@ export const useBoardStore = create((set) => ({
     set({ board })
 
     return { board }
+  },
+  deleteTodoInBoardAndDB: async (id, index) => {
+    const board = useBoardStore.getState().board
+    const column = board.columns.get(id)
+    const [deleted] = column.todos.splice(index, 1)
+    board.columns.set(id, column)
+    set({ board })
+    
+    // Delete in DB
+    await databases.deleteDocument(
+      process.env.NEXT_PUBLIC_DATABASE_ID,
+      process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID,
+      deleted.$id
+    )
+
+    // Delete image from storage if exists
+    if (deleted.image) {
+      await storage.deleteFile(deleted.bucketId, deleted.fileId)
+    }
   },
   updateTodoToBoardAndDB: async (todo) => {
     const board = useBoardStore.getState().board

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { useBoardStore } from '@/store/BoardStore'
 import { useEditModalStore } from '@/store/EditModalStore'
@@ -42,7 +42,7 @@ export default function RadioGroupByColumnId({ type = "add"}) {
   const selectedType = types.find(type => type.id === columnId)
   const [selected, setSelected] = useState(selectedType)
 
-  const handleSelectRadio = (t) => {
+  const handleSelectRadio = useCallback((t) => {
     setSelected(t)
     setColumnIdSrc(columnId)
     if (type === "edit") {
@@ -50,7 +50,25 @@ export default function RadioGroupByColumnId({ type = "add"}) {
     } else {
       setColumnIdSelected(t.id)
     }
-  }
+  }, [columnId, setColumnIdSelected, setColumnIdSrc, setStatusTodo, type])
+
+  useEffect(() => {
+    const handleKeyPressModal = (e) => {
+      if (e.altKey) {
+        if (e.key === '1') {
+          handleSelectRadio(types[0])
+        } else if (e.key === '2') {
+          handleSelectRadio(types[1])
+        } else if (e.key === '3') {
+          handleSelectRadio(types[2])
+        }
+      }
+    }
+    document.addEventListener('keydown', handleKeyPressModal)
+    return () => {
+      document.removeEventListener('keydown', handleKeyPressModal)
+    }
+  }, [handleSelectRadio])
 
   return (
     <div className="w-full px-4 py-8">

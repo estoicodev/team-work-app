@@ -8,12 +8,13 @@ import { useEffect, useState } from 'react'
 import fetchSuggestion from '@/utils/fetchSuggestion'
 
 export default function Header() {
-  const [board, searchString, setSearchString] = useBoardStore((state) => [
+  const [board, searchString, setSearchString, setInputSearchFocused] = useBoardStore((state) => [
     state.board,
     state.searchString,
-    state.setSearchString
+    state.setSearchString,
+    state.setInputSearchFocused
   ])
-  const [aiIsEnabled, setAiIsEnabled] = useState(true)
+  const [aiIsEnabled, setAiIsEnabled] = useState(false) // TODO: Change to true when get credits for ChatGPT
   const [loading, setLoading] = useState(false)
   const [suggestion, setSuggestion] = useState("Asistente de tareas ChatGPT")
 
@@ -73,10 +74,13 @@ export default function Header() {
           <form className="flex space-x-4 items-center bg-white rounded-md shadow-md p-2 flex-1 md:flex-initial">
             <MagnifyingGlassIcon className="w-6 h-6 text-gray-400"/>
             <input
-              type="text"
+              type="search"
               placeholder="Search"
               value={searchString}
+              id="search-input"
               onChange={(e) => setSearchString(e.target.value)}
+              onFocus={() => setInputSearchFocused(true)}
+              onBlur={() => setInputSearchFocused(false)}
               className="flex-1 p-1 outline-none"
             />
             <button type="submit" hidden>Search</button>

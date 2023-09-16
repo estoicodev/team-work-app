@@ -14,9 +14,10 @@ export default function TodoCard({
   dragHandleProps,
   isDraggingOver
 }) {
-  const [deleteTodoInBoardAndDB, setColumnIdSelected] = useBoardStore(state => [
+  const [deleteTodoInBoardAndDB, setColumnIdSelected, setModalIsOpen] = useBoardStore(state => [
     state.deleteTodoInBoardAndDB,
-    state.setColumnIdSelected
+    state.setColumnIdSelected,
+    state.setModalIsOpen
   ])
   const [openModal, setTitleTodo, setIdTodo, setStatusTodo] = useEditModalStore(state => [
     state.openModal,
@@ -26,11 +27,12 @@ export default function TodoCard({
   ])
 
   const handleEdit = (todo) => {
+    setStatusTodo(id)
     setTitleTodo(todo.title)
     setIdTodo(todo.$id)
     setColumnIdSelected(todo.id)
-    setStatusTodo(id)
     openModal()
+    setModalIsOpen(true)
   }
 
   return (

@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon, PlusIcon, PhotoIcon} from '@heroicons/react/24/solid'
 import { useBoardStore } from '@/store/BoardStore'
@@ -9,7 +9,8 @@ import RadioGroupByColumnId from './RadioGroupByColumnId'
 
 export default function AddTodoModal() {
   const [
-    newTaskInput, setNewTaskInput, columnIdSelected, setColumnIdSelected, image, setImage, addTodoToBoardAndDB
+    newTaskInput, setNewTaskInput, columnIdSelected, setColumnIdSelected,
+    image, setImage, addTodoToBoardAndDB, setModalIsOpen
   ] = useBoardStore((state) => [
     state.newTaskInput,
     state.setNewTaskInput,
@@ -17,7 +18,8 @@ export default function AddTodoModal() {
     state.setColumnIdSelected,
     state.image,
     state.setImage,
-    state.addTodoToBoardAndDB
+    state.addTodoToBoardAndDB,
+    state.setModalIsOpen
   ])
   const [isOpen, closeModal] = useAddModalStore((state) => [
     state.isOpen,
@@ -47,6 +49,7 @@ export default function AddTodoModal() {
   const handleClose = (e) => {
     closeModal()
     resetModal()
+    setModalIsOpen(false)
   }
 
   return (
@@ -96,7 +99,7 @@ export default function AddTodoModal() {
                   onChange={(e) => {
                     setNewTaskInput(e.target.value)
                   }}
-                  placeholder="Escribe la tarea aquí..."
+                  placeholder="Describe tu tarea..."
                   className="w-full max-w-md h-14 outline-none border border-gray-300 rounded-md p-5"
                 />
               </div>

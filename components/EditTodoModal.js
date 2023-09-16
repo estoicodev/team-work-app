@@ -8,10 +8,11 @@ import { useEditModalStore } from '@/store/EditModalStore'
 import RadioGroupByColumnId from './RadioGroupByColumnId'
 
 export default function EditTodoModal() {
-  const [updateTodoToBoardAndDB, image, setImage] = useBoardStore((state) => [
+  const [updateTodoToBoardAndDB, image, setImage, setModalIsOpen] = useBoardStore((state) => [
     state.updateTodoToBoardAndDB,
     state.image,
-    state.setImage
+    state.setImage,
+    state.setModalIsOpen
   ])
   const [
     isOpen, closeModal, titleTodo, setTitleTodo, $idTodo, setIdTodo, statusTodo, setStatusTodo
@@ -51,6 +52,7 @@ export default function EditTodoModal() {
   const handleClose = () => {
     closeModal()
     resetModal()
+    setModalIsOpen(false)
   }
 
   return (
@@ -99,6 +101,9 @@ export default function EditTodoModal() {
                   value={titleTodo}
                   onChange={(e) => {
                     setTitleTodo(e.target.value)
+                  }}
+                  onFocus={(e) => {
+                    e.target.select()
                   }}
                   placeholder="Escribe la tarea aquí..."
                   className="w-full max-w-md h-14 outline-none border border-gray-300 rounded-md p-5"
