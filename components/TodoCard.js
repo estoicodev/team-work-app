@@ -61,9 +61,11 @@ export default function TodoCard({
       {
         todo.image && (
           <Image
-            width={250} height={200}
-            alt={todo.title} src={todo.image}
-            className="w-full h-48 md:h-52 object-cover object-center rounded-b-md"
+            width={200}
+            height={200}
+            className="w-full h-44 object-cover filter hover:grayscale hover:scale-95 cursor-not-allowed transition-all duration-150"
+            alt={todo.title}
+            src={todo.image}
           />
         )
       }

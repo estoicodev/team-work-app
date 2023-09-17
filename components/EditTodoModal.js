@@ -151,7 +151,7 @@ export default function EditTodoModal() {
                   <PhotoIcon className="w-6 h-6 text-gray-800 mr-2" />
                   {image ?
                     <span>{image.name}</span>
-                    : "Sube una imagen"
+                    : "Sube una nueva imagen"
                   }
                 </label>
               </div>
@@ -171,7 +171,7 @@ export default function EditTodoModal() {
                   type="submit"
                   disabled={!titleTodo}
                   className="order-1 xs:order-2 flex-1 xs:flex-none bg-blue-500 hover:bg-blue-600
-                    text-white font-bold py-3 px-6 rounded-lg inline-flex
+                    text-white font-bold py-3 px-6 rounded-lg inline-flex justify-center items-center
                     disabled:bg-blue-300 disabled:text-white/80 disabled:cursor-not-allowed
                   "
                 >

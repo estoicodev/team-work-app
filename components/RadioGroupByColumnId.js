@@ -100,7 +100,7 @@ export default function RadioGroupByColumnId({ type = "add"}) {
                   <>
                     <div className="flex w-full items-center justify-between">
                       <div className="flex items-center">
-                        <div className="text-sm">
+                        <div className="text-sm text-start">
                           <RadioGroup.Label
                             as="p"
                             className={`font-medium text-start text-base pb-0.5 ${
@@ -121,11 +121,9 @@ export default function RadioGroupByColumnId({ type = "add"}) {
                           </RadioGroup.Description>
                         </div>
                       </div>
-                      {checked && (
-                        <div className="shrink-0 text-white">
-                          <CheckCircleIcon className="h-[26px] w-[26px] fill-white/70" />
-                        </div>
-                      )}
+                      <div className="shrink-0 text-white">
+                        <CheckCircleIcon className="h-[26px] w-[26px] fill-white/70" />
+                      </div>
                     </div>
                   </>
                 )}
