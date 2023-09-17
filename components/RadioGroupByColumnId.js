@@ -7,21 +7,21 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid'
 const types = [
   {
     id: "todo",
-    name: 'Todo',
+    name: 'Por hacer',
     description: 'Una nueva tarea para completar',
     color: 'bg-red-500',
     ringOffsetColor: 'ring-offset-red-300'
   },
   {
     id: "inprogress",
-    name: 'In Progress',
+    name: 'En progreso',
     description: 'Una tarea en progreso',
     color: 'bg-yellow-500',
     ringOffsetColor: 'ring-offset-yellow-300'
   },
   {
     id: "done",
-    name: 'Done',
+    name: 'Hecho',
     description: 'Una tarea completada',
     color: 'bg-green-500',
     ringOffsetColor: 'ring-offset-green-300'
@@ -44,10 +44,11 @@ export default function RadioGroupByColumnId({ type = "add"}) {
 
   const handleSelectRadio = useCallback((t) => {
     setSelected(t)
-    setColumnIdSrc(columnId)
     if (type === "edit") {
+      setColumnIdSrc(columnId)
       setStatusTodo(t.id)
     } else {
+      // setColumnIdSrc(t.id)
       setColumnIdSelected(t.id)
     }
   }, [columnId, setColumnIdSelected, setColumnIdSrc, setStatusTodo, type])
@@ -56,10 +57,13 @@ export default function RadioGroupByColumnId({ type = "add"}) {
     const handleKeyPressModal = (e) => {
       if (e.altKey) {
         if (e.key === '1') {
+          e.preventDefault()
           handleSelectRadio(types[0])
         } else if (e.key === '2') {
+          e.preventDefault()
           handleSelectRadio(types[1])
         } else if (e.key === '3') {
+          e.preventDefault()
           handleSelectRadio(types[2])
         }
       }

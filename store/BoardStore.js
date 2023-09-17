@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { useEditModalStore } from './EditModalStore'
 import uploadImage from '@/utils/uploadImage'
 import getUrl from '@/utils/getUrl'
+import getImageIdByUrl from '@/utils/getImageByUrl'
 
 export const useBoardStore = create((set) => ({
   board: {
@@ -16,6 +17,10 @@ export const useBoardStore = create((set) => ({
   searchString: "",
   inputSearchFocused: false,
   modalIsOpen: false,
+  isShortcutActive: false,
+  setIsShortcutActive: (inputSearchFocused) => {
+    set({ inputSearchFocused })
+  },
   setSearchString: (searchString) => set({ searchString }),
   setInputSearchFocused: (inputSearchFocused) => {
     set({ inputSearchFocused })
@@ -82,6 +87,7 @@ export const useBoardStore = create((set) => ({
 
     column.todos.push(addedTodo)
     board.columns.set(addedTodo.status, column)
+
     set({ board })
 
     return { board }
@@ -107,7 +113,7 @@ export const useBoardStore = create((set) => ({
   },
   updateTodoToBoardAndDB: async (todo) => {
     const board = useBoardStore.getState().board
-    const statusSrc = useEditModalStore.getState().columnIdSrc || todo.status
+    const statusSrc = useEditModalStore.getState().columnIdSrc
     const columnSrc = board.columns.get(statusSrc)
     const columnDest = board.columns.get(todo.status)
 
@@ -122,14 +128,27 @@ export const useBoardStore = create((set) => ({
           fileId: fileUploaded.$id
         }
       }
+    } else {
+      // Delete image from storage if exists and no new image to upload
+      const todoDB = await databases.getDocument(process.env.NEXT_PUBLIC_DATABASE_ID,
+        process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID, todo.$id)
+      if (todoDB.image) {
+        const imageId = await getImageIdByUrl(todoDB.image)
+        // Delete image from storage
+        await storage.deleteFile(process.env.NEXT_PUBLIC_TODOS_BUCKET_ID, imageId)
+        // Delete imageUrl from todo
+        todo.image = null
+      }
     }
 
     // Handle ui update
-    const indexSrc = columnSrc.todos.findIndex((t) => t.$id === todo.$id)
-    if (columnSrc && columnSrc === columnDest) {
-      columnSrc.todos[indexSrc].title = todo.title
-      columnSrc.todos[indexSrc].image = file ? getUrl(file.bucketId, file.fileId) : null
-      board.columns.get(todo.status).todos = columnSrc.todos
+    const indexSrc = columnSrc?.todos.findIndex((t) => t.$id === todo.$id)
+    const indexDest = columnDest?.todos.findIndex((t) => t.$id === todo.$id)
+    if (!columnSrc && columnDest) {
+      columnDest.todos[indexDest].title = todo.title
+      columnDest.todos[indexDest].image = file ? getUrl(file.bucketId, file.fileId) : null
+      board.columns.get(todo.status).todos = columnDest.todos
+      set({ board })
     } else {
       columnSrc.todos.splice(indexSrc, 1)
       columnDest.todos.push({
@@ -138,6 +157,7 @@ export const useBoardStore = create((set) => ({
       })
       board.columns.get(statusSrc).todos = columnSrc.todos
       board.columns.get(todo.status).todos = columnDest.todos
+      set({ board })
     }
 
     // Update todo in DB
@@ -148,11 +168,10 @@ export const useBoardStore = create((set) => ({
       {
         title: todo.title,
         status: todo.status,
-        ...(file && { image: getUrl(file.bucketId, file.fileId) }),
+        image: file ? getUrl(file.bucketId, file.fileId) : null,
       }
     )
 
-    set({ board })
     return { board }
   },
 }))

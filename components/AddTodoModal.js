@@ -1,16 +1,17 @@
 "use client"
 
-import { Fragment, useEffect } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon, PlusIcon, PhotoIcon} from '@heroicons/react/24/solid'
+import { XMarkIcon, PlusIcon, PhotoIcon, CheckIcon} from '@heroicons/react/24/solid'
 import { useBoardStore } from '@/store/BoardStore'
 import { useAddModalStore } from '@/store/AddModalStore'
 import RadioGroupByColumnId from './RadioGroupByColumnId'
+import { acceptedChars } from '@/consts'
 
 export default function AddTodoModal() {
   const [
     newTaskInput, setNewTaskInput, columnIdSelected, setColumnIdSelected,
-    image, setImage, addTodoToBoardAndDB, setModalIsOpen
+    image, setImage, addTodoToBoardAndDB
   ] = useBoardStore((state) => [
     state.newTaskInput,
     state.setNewTaskInput,
@@ -19,16 +20,16 @@ export default function AddTodoModal() {
     state.image,
     state.setImage,
     state.addTodoToBoardAndDB,
-    state.setModalIsOpen
   ])
   const [isOpen, closeModal] = useAddModalStore((state) => [
     state.isOpen,
     state.closeModal
   ])
+  const [blockInput, setBlockInput] = useState(false);
 
   const resetModal = () => {
     setImage(null)
-    setColumnIdSelected("")
+    // setColumnIdSelected("")
   }
 
   const handleSubmit = (e) => {
@@ -49,7 +50,14 @@ export default function AddTodoModal() {
   const handleClose = (e) => {
     closeModal()
     resetModal()
-    setModalIsOpen(false)
+  }
+
+  const handleChangeInput = (e) => {
+    if (blockInput) {
+      e.preventDefault()
+    } else {
+      setNewTaskInput(e.target.value)
+    }
   }
 
   return (
@@ -96,8 +104,19 @@ export default function AddTodoModal() {
                 <input
                   type="text"
                   value={newTaskInput}
-                  onChange={(e) => {
-                    setNewTaskInput(e.target.value)
+                  onChange={handleChangeInput}
+                  onKeyDown={(e) => {
+                    if (e.altKey && (e.key === '1' || e.key === '2' || e.key === '3')) {
+                      setBlockInput(true)
+                    }
+                    if (acceptedChars.includes(e.key)) {
+                      setBlockInput(false)
+                    }
+                  }}
+                  onKeyUp={(e) => {
+                    if (e.key === 'Alt' || acceptedChars.includes(e.key)) {
+                      setBlockInput(false)
+                    }
                   }}
                   placeholder="Describe tu tarea..."
                   className="w-full max-w-md h-14 outline-none border border-gray-300 rounded-md p-5"
@@ -123,10 +142,15 @@ export default function AddTodoModal() {
                   htmlFor="file-image"
                   className="flex items-center justify-center w-full h-full text-sm font-medium text-gray-800 bg-transparent hover:bg-gray-200 border border-gray-300 rounded-md px-5 py-7 shadow-sm cursor-pointer"
                 >
-                  <PhotoIcon className="w-6 h-6 text-gray-800 mr-2" />
                   {image ?
-                    <span>{image.name}</span>
-                    : "Sube una imagen"
+                    <>
+                      <CheckIcon className="w-5 h-5 text-gray-800 mr-2" />
+                      <span>{image.name}</span>
+                    </>
+                    : <>
+                      <PhotoIcon className="w-5 h-5 text-gray-800 mr-2" />
+                      <span>Sube una imagen</span>
+                    </>
                   }
                 </label>
               </div>

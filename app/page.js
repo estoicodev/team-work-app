@@ -25,16 +25,20 @@ export default function Home() {
     const handleKeyPress = (e) => {
       if (!inputSearchFocused && !modalIsOpen) {
         if (e.key === 'q') {
+          if (modalIsOpen) return
           setColumnIdSelected("todo")
           openModal()
         } else if (e.key === 'w') {
+          if (modalIsOpen) return
           setColumnIdSelected("inprogress")
           openModal()
         } else if (e.key === 'e') {
+          if (modalIsOpen) return
           setColumnIdSelected("done")
           openModal()
         } else if (e.key === '/') {
           e.preventDefault()
+          if (modalIsOpen) return
           const searchInput = document.getElementById('search-input')
           searchInput.value = ""
           searchInput.focus()
@@ -46,13 +50,10 @@ export default function Home() {
     return () => {
       document.removeEventListener('keydown', handleKeyPress)
     }
-  }, [openModal, setColumnIdSelected, inputSearchFocused, setInputSearchFocused,
-    setModalIsOpen, modalIsOpen])
+  }, [openModal, setColumnIdSelected, inputSearchFocused, setInputSearchFocused, setModalIsOpen, modalIsOpen])
   
   return (
-    <main
-      className="flex flex-col"
-    >
+    <main className="flex flex-col">
       <Header />
       <Board />
     </main>

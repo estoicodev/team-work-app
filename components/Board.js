@@ -1,10 +1,10 @@
 "use client"
 
+import Column from '@/components/Column.js'
 import { useBoardStore } from '@/store/BoardStore'
 import { useEditModalStore } from '@/store/EditModalStore'
-import Column from '@/components/Column.js'
-import { useEffect } from 'react'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { useEffect } from 'react'
 
 export default function Board() {
   const [board, getBoard, setBoardState, updateTodoInDB] = useBoardStore((state) => [

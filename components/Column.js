@@ -5,10 +5,19 @@ import { useEffect, useState } from "react"
 import { useBoardStore } from "@/store/BoardStore"
 import { useAddModalStore } from "@/store/AddModalStore"
 
-const idToColumnText = {
-  'todo': 'To Do',
-  'inprogress': 'In Progress',
-  'done': 'Done'
+const idToColumn = {
+  'todo': {
+    name: 'Por hacer',
+    countColorBg: 'bg-red-300/80'
+  },
+  'inprogress': {
+    name: 'En progreso',
+    countColorBg: 'bg-yellow-300/80'
+  },
+  'done': {
+    name: 'Hecho',
+    countColorBg: 'bg-green-300/80'
+  }
 }
 
 export default function Column({ id, todos, index }) {
@@ -49,8 +58,8 @@ export default function Column({ id, todos, index }) {
                 }`}
               >
                 <h2 className="w-full flex justify-between items-center text-lg font-bold px-2 pt-2 pb-3">
-                  {idToColumnText[id]}
-                  <span className="flex justify-center items-center px-2 py-1 bg-gray-300/60 text-gray-500 text-xs md:text-sm font-semibold rounded-full">
+                  {idToColumn[id].name}
+                  <span className={`flex justify-center items-center px-2.5 py-1 ${idToColumn[id].countColorBg} text-gray-600 text-xs md:text-sm font-semibold rounded-full`}>
                     {filteredTodos.length}
                   </span>
                 </h2>

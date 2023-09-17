@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { useBoardStore } from './BoardStore'
 
 export const useEditModalStore = create((set) => ({
   isOpen: false,
@@ -6,9 +7,13 @@ export const useEditModalStore = create((set) => ({
   $idTodo: "",
   columnIdSrc: "",
   statusTodo: "",
-  openModal: () => set({ isOpen: true }),
+  openModal: () => {
+    set({ isOpen: true })
+    useBoardStore.getState().setModalIsOpen(true)
+  },
   closeModal: () => {
     set({ isOpen: false })
+    useBoardStore.getState().setModalIsOpen(false)
   },
   setTitleTodo: (title) => set({ titleTodo: title }),
   setStatusTodo: (status) => set({ statusTodo: status }),

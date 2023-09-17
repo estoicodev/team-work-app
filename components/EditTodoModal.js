@@ -1,18 +1,18 @@
 "use client"
 
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon, PlusIcon, PhotoIcon} from '@heroicons/react/24/solid'
 import { useBoardStore } from '@/store/BoardStore'
 import { useEditModalStore } from '@/store/EditModalStore'
 import RadioGroupByColumnId from './RadioGroupByColumnId'
+import { acceptedChars } from '@/consts'
 
 export default function EditTodoModal() {
-  const [updateTodoToBoardAndDB, image, setImage, setModalIsOpen] = useBoardStore((state) => [
+  const [updateTodoToBoardAndDB, image, setImage] = useBoardStore((state) => [
     state.updateTodoToBoardAndDB,
     state.image,
-    state.setImage,
-    state.setModalIsOpen
+    state.setImage
   ])
   const [
     isOpen, closeModal, titleTodo, setTitleTodo, $idTodo, setIdTodo, statusTodo, setStatusTodo
@@ -26,12 +26,13 @@ export default function EditTodoModal() {
     state.statusTodo,
     state.setStatusTodo
   ])
+  const [blockInput, setBlockInput] = useState(false);
 
   const resetModal = () => {
     setTitleTodo("")
     setIdTodo("")
     setImage(null)
-    setStatusTodo("")
+    // setStatusTodo("")
   }
 
   const handleSubmit = (e) => {
@@ -52,7 +53,14 @@ export default function EditTodoModal() {
   const handleClose = () => {
     closeModal()
     resetModal()
-    setModalIsOpen(false)
+  }
+
+  const handleChangeInput = (e) => {
+    if (blockInput) {
+      e.preventDefault()
+    } else {
+      setTitleTodo(e.target.value)
+    }
   }
 
   return (
@@ -99,8 +107,19 @@ export default function EditTodoModal() {
                 <input
                   type="text"
                   value={titleTodo}
-                  onChange={(e) => {
-                    setTitleTodo(e.target.value)
+                  onChange={handleChangeInput}
+                  onKeyDown={(e) => {
+                    if (e.altKey && (e.key === '1' || e.key === '2' || e.key === '3')) {
+                      setBlockInput(true)
+                    }
+                    if (acceptedChars.includes(e.key)) {
+                      setBlockInput(false)
+                    }
+                  }}
+                  onKeyUp={(e) => {
+                    if (e.key === 'Alt' || acceptedChars.includes(e.key)) {
+                      setBlockInput(false)
+                    }
                   }}
                   onFocus={(e) => {
                     e.target.select()
