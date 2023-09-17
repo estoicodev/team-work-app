@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Team Work App
 
-## Getting Started
+Una aplicacion de manejo de tareas super sencillo de usar y con una UI amigable
 
-First, run the development server:
+## Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+[x] Función arrastrar y soltar para mover tareas
+[x] Buscador sencillo
+[x] Manejar agregar/editar/eliminar tarea
+[x] Subir imagen para cada tarea
+[x] Guardado en base de datos
+[x] Tareas resumidas de ChatGPT (deshabilitada por créditos insuficientes en mi cuenta :c)
+[x] Totalmente responsive
+[x] Manejar eventos de teclados para una productividad más rápida
+[] Página de inicio de sesión y autenticación
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tecnologías
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Next.js 13
+- Zustand: Manejo de estados
+- Appwrite: Para el database y guardado de imagenes
+- React Beautiful DND: Drag And Drop feature
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Lista de shortcuts
 
-## Learn More
+- `q`: Nueva tarea 'To do'
+- `w`: Nueva tarea 'In Progress'
+- `e`: Nueva tarea 'Done'
+- `/`: Buscador
 
-To learn more about Next.js, take a look at the following resources:
+Al añadir/actualizar tarea:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `Alt + 1`: Seleccionar estado 'To do'
+- `Alt + 2`: Seleccionar estado 'In Progress'
+- `Alt + 3`: Seleccionar estado 'Done'
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Autor
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+estoicodev <estoicodev@gmail.com>
