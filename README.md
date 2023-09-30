@@ -1,29 +1,27 @@
 # Team Work App
 
-Una aplicacion de manejo de tareas super sencillo de usar y con una UI amigable
+Una aplicacion de manejo de tareas super sencillo de usar y con una UI amigable.
 
 ## Links
 - [Demo](https://team-work-app-estoicodev.vercel.app/)
 
 ## Características
 
-[x] Función arrastrar y soltar para mover tareas
+- Función arrastrar y soltar para mover tareas
 
-[x] Buscador sencillo
+- Buscador sencillo
 
-[x] Manejar agregar/editar/eliminar tarea
+- Manejar agregar/editar/eliminar tarea
 
-[x] Subir imagen para cada tarea
+- Subir imagen para cada tarea
 
-[x] Guardado en base de datos
+- Guardado en base de datos
 
-[x] Tareas resumidas de ChatGPT (deshabilitada por créditos insuficientes en mi cuenta :c)
+- Tareas resumidas de ChatGPT (deshabilitada por créditos insuficientes en mi cuenta :c)
 
-[x] Totalmente responsive
+- Totalmente responsive
 
-[x] Manejar eventos de teclados para una productividad más rápida
-
-[ ] Página de inicio de sesión y autenticación
+- Manejar eventos de teclados para una productividad más rápida
 
 ## Tecnologías
 
