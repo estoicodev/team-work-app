@@ -3,7 +3,7 @@
 Una aplicacion de manejo de tareas super sencillo de usar y con una UI amigable.
 
 ## Links
-- [Demo](https://team-work-app-estoicodev.vercel.app/)
+- [Demo](https://teamworkapp.vercel.app)
 
 ## Características
 
